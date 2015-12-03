@@ -3,29 +3,27 @@ using System.Collections;
 
 public class PaddleController : MonoBehaviour {
 
-	float movedownX = 0.0f;
-	float sensitivityX = 1f;
-	float movedownY = 0.0f;
-	float sensitivityY = 1f;
+	float moveZ = 0.0f;
+	float moveX = 0.0f;
+	float sensitivityZ = 0.5f;
+	float sensitivityX = 0.5f;
 	// Update is called once per frame
 	void Update () {
 
-	movedownX += Input.GetAxis("Mouse X") * sensitivityX;
-	if (Input.GetAxis("Mouse X") != 0f){
-		transform.Translate(Vector3.right * movedownX);
-	}
-	movedownX = 0.0f;
-	
-	movedownY += Input.GetAxis("Mouse Y") * sensitivityY;
-	if (Input.GetAxis("Mouse Y") != 0f){
-		transform.Translate(Vector3.forward * movedownY);
-	}
-	movedownY = 0.0f;
-
-
-
-
-
+		moveZ += Input.GetAxis("Mouse Y") * sensitivityZ;
+		if (Input.GetAxis("Mouse Y") != 0f){
+			transform.Translate(Vector3.forward * moveZ);
+		}
+		moveZ = 0.0f;
+		
+		moveX += Input.GetAxis("Mouse X") * sensitivityX;
+		if( Input.GetAxis("Mouse X") != 0f){
+			if((transform.localPosition.x >= -1.5f && Input.GetAxis("Mouse X") <= 0.0f)
+			   || (transform.localPosition.x <= 1.5f && Input.GetAxis("Mouse X") >= 0.0f) ){
+				transform.Translate (Vector3.right * moveX);
+			}
+		}
+		moveX = 0.0f;
 
 		/*float inputSpeed = Input.GetAxisRaw ("HumanPaddle");
 		
@@ -45,6 +43,5 @@ public class PaddleController : MonoBehaviour {
 			transform.position += Vector3.right * Time.deltaTime;
 			
 		}*/
-
 	}
 }
