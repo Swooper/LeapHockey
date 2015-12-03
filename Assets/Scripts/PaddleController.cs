@@ -3,16 +3,16 @@ using System.Collections;
 
 public class PaddleController : MonoBehaviour {
 
-	var movedownY = 0.0;
-	var sensitivityY = 1;
+	float movedownX = 0.0f;
+	float sensitivityX = 1f;
 	// Update is called once per frame
 	void Update () {
 
-	movedownY += Input.GetAxis("Mouse Y") * sensitivityY;
-	if (Input.GetAxis("Mouse Y") != 0){
-		transform.Translate(Vector3.forward * movedownY);
+	movedownX += Input.GetAxis("Mouse Y") * sensitivityX;
+	if (Input.GetAxis("Mouse Y") != 0f){
+		transform.Translate(Vector3.forward * movedownX);
 	}
-	movedownY = 0.0;
+	movedownX = 0.0f;
 	
 
 
