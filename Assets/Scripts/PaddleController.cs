@@ -5,10 +5,10 @@ public class PaddleController : MonoBehaviour {
 
 	float moveZ = 0.0f;
 	float moveX = 0.0f;
-	float sensitivityZ = 0.5f;
-	float sensitivityX = 0.5f;
+	float sensitivityZ = 4f;
+	float sensitivityX = 4f;
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
 		moveZ += Input.GetAxis("Mouse Y") * sensitivityZ;
 		if (Input.GetAxis("Mouse Y") != 0f){
@@ -18,10 +18,10 @@ public class PaddleController : MonoBehaviour {
 		
 		moveX += Input.GetAxis("Mouse X") * sensitivityX;
 		if( Input.GetAxis("Mouse X") != 0f){
-			if((transform.localPosition.x >= -1.5f && Input.GetAxis("Mouse X") <= 0.0f)
-			   || (transform.localPosition.x <= 1.5f && Input.GetAxis("Mouse X") >= 0.0f) ){
-				transform.Translate (Vector3.right * moveX);
-			}
+			//if((transform.localPosition.x >= -1.5f && Input.GetAxis("Mouse X") <= 0.0f)
+			  // || (transform.localPosition.x <= 1.5f && Input.GetAxis("Mouse X") >= 0.0f) ){
+			transform.Translate (Vector3.right * moveX);
+			//}
 		}
 		moveX = 0.0f;
 
