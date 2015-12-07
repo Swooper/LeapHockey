@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class Microphone Input: MonoBehaviour {
+public class MicrophoneInput: MonoBehaviour {
 	
 	//[RequireComponent(typeof(AudioSource))]
 	
