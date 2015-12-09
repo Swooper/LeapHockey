@@ -6,16 +6,18 @@ public class AiPaddleController : MonoBehaviour {
 	//private Rigidbody body;
 	public float puckXPos;
 	public float puckZPos;
+
+	private GameObject puck;
 	// Use this for initialization
 	void Start () {
-		 puckXPos = GameObject.Find ("Puck").transform.position.x;
-		 puckZPos = GameObject.Find ("Puck").transform.position.z;
+		puck = GameObject.Find("Puck(Clone)");
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 
-
+		puckXPos = puck.transform.position.x;
+		puckZPos = puck.transform.position.z;
 		float opponentXPos = transform.position.x;
 		float opponentZPos = transform.position.z;
 
