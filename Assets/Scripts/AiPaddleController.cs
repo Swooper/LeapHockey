@@ -22,7 +22,9 @@ public class AiPaddleController : MonoBehaviour {
 				transform.position += Vector3.right * Time.deltaTime;
 			}
 		}
-
+		if (puckZPos > 0) {
+			transform.position += Vector3.back * Time.deltaTime;
+		}
 
 		Debug.Log ("xpos :" + opponentXPos);
 		Debug.Log ("x : " + puckXPos);
