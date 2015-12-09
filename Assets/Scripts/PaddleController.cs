@@ -60,7 +60,7 @@ public class PaddleController : MonoBehaviour {
 			}
 			buffer = buffer + spectrum[x] + " ";
 		}
-		Debug.Log ("x : " + xvalue);
+		//Debug.Log ("x : " + xvalue);
 		if(xvalue > 5) {
 			return true;
 		}
