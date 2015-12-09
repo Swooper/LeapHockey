@@ -39,22 +39,24 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		MicLoudness = LevelMax ();
 		float loudness = MicLoudness;
-		loudness = Mathf.Pow (loudness, 10);
-		loudness = loudness * 10;
+		//loudness = Mathf.Pow (loudness, 10);
+		//loudness = loudness * 10;
 
 		//float moveHorizontal = Input.GetAxis("Mouse X");
 		//float moveVertical = Input.GetAxis("Mouse Y");
 
-		float moveHorizontal = audio.pitch;
+		float moveHorizontal = Input.GetAxis ("Horizontal");
+
+		Debug.Log (moveHorizontal);
 
 		float moveVertical = loudness;
-		if (loudness == 0) {
+		if (loudness < 0.01) {
 			moveVertical = -0.1f;
 		
 		}
-		Debug.Log ("Loudness :" + loudness);
+		//Debug.Log ("Loudness :" + loudness);
 
-		Debug.Log (loudness);
+		//Debug.Log (loudness);
 
 		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 		body.velocity = movement * speed;
@@ -64,6 +66,7 @@ public class PaddleController : MonoBehaviour {
 			0.0f,
 			Mathf.Clamp(body.position.z, boundary.zMin, boundary.zMax)
 		);
+		loudness = 0f;
 	}
 
 	public float  LevelMax()
