@@ -62,6 +62,7 @@ public class ScoreManager : MonoBehaviour {
 	private void ResetPositions(bool playerSide) {
 		player.transform.position = playerStartPos.transform.position;
 		enemy.transform.position = enemyStartPos.transform.position;
+		puck.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
 		if(playerSide) {
 			puck.transform.position = playerPuckStart.transform.position;
 		}
