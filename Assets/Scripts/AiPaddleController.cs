@@ -15,11 +15,11 @@ public class AiPaddleController : MonoBehaviour {
 		float puckZPos = GameObject.Find ("Puck").transform.position.z;
 		float opponentXPos = transform.position.x;
 		if (puckXPos != opponentXPos) {
-			if (puckXPos > 0)
-				transform.position += Vector3.right * Time.deltaTime;
-			else if (puckXPos < 0)
-			{
+			if (opponentXPos > puckXPos)
 				transform.position += Vector3.left * Time.deltaTime;
+			else if (opponentXPos < puckXPos)
+			{
+				transform.position += Vector3.right * Time.deltaTime;
 			}
 		}
 
