@@ -20,6 +20,8 @@ public class PaddleController : MonoBehaviour {
 	private int _sampleWindow;
 	private bool _isInitialized;
 	private AudioSource audio;
+	float[] spectrum = new float[256];
+
 
 	void Awake () {
 		boundary.xMin = -1.5f;
@@ -34,7 +36,40 @@ public class PaddleController : MonoBehaviour {
 		audio.clip = _clipRecord;
 	}
 
+	void Update() {
 
+		//while (!(Microphone.GetPosition(_device)>0)) {
+		//}
+
+		audio.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
+		int i = 1;
+		while (i < spectrum.Length-1) {
+			Debug.DrawLine(new Vector3(i - 1, spectrum[i] + 10, 0), new Vector3(i, spectrum[i + 1] + 10, 0), Color.red);
+			Debug.DrawLine(new Vector3(i - 1, Mathf.Log(spectrum[i - 1]) + 10, 2), new Vector3(i, Mathf.Log(spectrum[i]) + 10, 2), Color.cyan);
+			Debug.DrawLine(new Vector3(Mathf.Log(i - 1), spectrum[i - 1] - 10, 1), new Vector3(Mathf.Log(i), spectrum[i] - 10, 1), Color.green);
+			Debug.DrawLine(new Vector3(Mathf.Log(i - 1), Mathf.Log(spectrum[i - 1]), 3), new Vector3(Mathf.Log(i), Mathf.Log(spectrum[i]), 3), Color.yellow);
+			i++;
+		}
+		int xvalue =0;
+		string buffer = "";
+		float maxfreq = 0f;
+		for (int x = 0; x < spectrum.Length; x++) {
+			if (spectrum[x]>maxfreq)
+			{
+				maxfreq = spectrum[x];
+				xvalue = x;
+			}
+			if(spectrum[x] < 0.0001f)
+			{
+				spectrum[x] = 0;
+			}
+
+				buffer = buffer + spectrum[x] + " ";	
+		}
+		Debug.Log (maxfreq);
+		Debug.Log ("x : " + xvalue);
+		//Debug.Log (buffer);
+	}
 	// Update is called once per physics frame
 	void FixedUpdate () {
 		MicLoudness = LevelMax ();
@@ -47,14 +82,14 @@ public class PaddleController : MonoBehaviour {
 
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 
-		Debug.Log (moveHorizontal);
+		//Debug.Log (moveHorizontal);
 
 		float moveVertical = loudness;
 		if (loudness < 0.01) {
 			moveVertical = -0.1f;
 		
 		}
-		//Debug.Log ("Loudness :" + loudness);
+		Debug.Log ("Loudness :" + loudness);
 
 		//Debug.Log (loudness);
 
@@ -127,6 +162,10 @@ public class PaddleController : MonoBehaviour {
 	void InitMic() {
 		if(_device == null) _device = Microphone.devices[0];
 		_clipRecord = Microphone.Start(_device, true, 999, 44100);
+		while (!(Microphone.GetPosition(_device)>0)) {
+		}
+		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
+
 	}
 	void StopMicrophone() {
 		Microphone.End(_device);
