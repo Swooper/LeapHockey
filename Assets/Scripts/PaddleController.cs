@@ -20,7 +20,7 @@ public class PaddleController : MonoBehaviour {
 	private int _sampleWindow;
 	private bool _isInitialized;
 	private AudioSource audio;
-	float[] spectrum = new float[256];
+	float[] spectrum;
 
 
 	void Awake () {
@@ -34,13 +34,10 @@ public class PaddleController : MonoBehaviour {
 		_sampleWindow = 128;
 		audio = GetComponent<AudioSource>();
 		audio.clip = _clipRecord;
+		spectrum = new float[256];
 	}
 
-	void Update() {
-
-		//while (!(Microphone.GetPosition(_device)>0)) {
-		//}
-
+	private bool getHorizontal() {
 		audio.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
 		int i = 1;
 		while (i < spectrum.Length-1) {
@@ -54,45 +51,45 @@ public class PaddleController : MonoBehaviour {
 		string buffer = "";
 		float maxfreq = 0f;
 		for (int x = 0; x < spectrum.Length; x++) {
-			if (spectrum[x]>maxfreq)
-			{
+			if (spectrum[x]>maxfreq) {
 				maxfreq = spectrum[x];
 				xvalue = x;
 			}
-			if(spectrum[x] < 0.0001f)
-			{
+			if(spectrum[x] < 0.0001f) {
 				spectrum[x] = 0;
 			}
-
-				buffer = buffer + spectrum[x] + " ";	
+			buffer = buffer + spectrum[x] + " ";
 		}
-		Debug.Log (maxfreq);
 		Debug.Log ("x : " + xvalue);
-		//Debug.Log (buffer);
+		if(xvalue > 5) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
+
 	// Update is called once per physics frame
 	void FixedUpdate () {
+		// Vertical movement
 		MicLoudness = LevelMax ();
 		float loudness = MicLoudness;
-		//loudness = Mathf.Pow (loudness, 10);
-		//loudness = loudness * 10;
-
-		//float moveHorizontal = Input.GetAxis("Mouse X");
-		//float moveVertical = Input.GetAxis("Mouse Y");
-
-		float moveHorizontal = Input.GetAxis ("Horizontal");
-
-		//Debug.Log (moveHorizontal);
-
 		float moveVertical = loudness;
 		if (loudness < 0.01) {
 			moveVertical = -0.1f;
-		
 		}
-		Debug.Log ("Loudness :" + loudness);
 
-		//Debug.Log (loudness);
+		// Horizontal movement
+		float moveHorizontal = 0.0f;
+		if(getHorizontal()) {
+			moveHorizontal = 0.1f;
+		}
+		else {
+			moveHorizontal = -0.1f;
+		}
+		//float moveHorizontal = Input.GetAxis ("Horizontal");
 
+		//Putting it together
 		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 		body.velocity = movement * speed;
 
@@ -108,7 +105,7 @@ public class PaddleController : MonoBehaviour {
 	{
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
-		Debug.Log (waveData);
+		//Debug.Log (waveData);
 		int micPosition = Microphone.GetPosition(null)-(_sampleWindow+1); // null means the first microphone
 		if (micPosition < 0) return 0;
 		_clipRecord.GetData(waveData, micPosition);
