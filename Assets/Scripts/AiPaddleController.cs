@@ -26,8 +26,8 @@ public class AiPaddleController : MonoBehaviour {
 			transform.position += Vector3.back * Time.deltaTime;
 		}
 
-		Debug.Log ("xpos :" + opponentXPos);
-		Debug.Log ("x : " + puckXPos);
-		Debug.Log ("z : " + puckZPos);
+//		Debug.Log ("xpos :" + opponentXPos);
+//		Debug.Log ("x : " + puckXPos);
+//		Debug.Log ("z : " + puckZPos);
 	}
 }

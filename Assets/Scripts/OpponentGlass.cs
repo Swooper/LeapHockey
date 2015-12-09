@@ -14,8 +14,8 @@ public class OpponentGlass : MonoBehaviour {
 
 	}
 
-	void OnCollision(Collider col) {
-		if(col.tag == "Puck") {
+	void OnCollisionEnter(Collision col) {
+		if(col.collider.tag == "Puck") {
 			scoreMan.AddScore(true);
 		}
 

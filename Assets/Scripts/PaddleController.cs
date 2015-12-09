@@ -78,7 +78,7 @@ public class PaddleController : MonoBehaviour {
 		if (loudness < 0.01) {
 			moveVertical = -0.1f;
 		}
-
+		loudness = loudness * 10.0f;
 		// Horizontal movement
 		float moveHorizontal = 0.0f;
 		if(getHorizontal()) {
