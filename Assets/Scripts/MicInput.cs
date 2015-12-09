@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MicInput : MonoBehaviour {
 	
-	public static float MicLoudness;
+	public float MicLoudness;
 	
 	private string _device;
 	private Rigidbody body;
@@ -33,7 +33,7 @@ public class MicInput : MonoBehaviour {
 	int _sampleWindow = 128;
 	
 	//get data from microphone into audioclip
-	float  LevelMax()
+	public float  LevelMax()
 	{
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
@@ -48,26 +48,35 @@ public class MicInput : MonoBehaviour {
 				levelMax = wavePeak;
 			}
 		}
+	
 		return levelMax;
 	}
 	
-	
-	
+	/*void Loudness(){
+		MicLoudness = LevelMax ();
+		//float Loudness = MicLoudness;
+		MicLoudness = Mathf.Pow (MicLoudness, 10);
+		MicLoudness = Loudness * 100;
+		//Vector3 movement = new Vector3(0f, 0f, Loudness);
+		Debug.Log ("Loudness :" + MicLoudness);
+		//return MicLoudness;
+	}*/
+
 	void FixedUpdate()
 	{
 		// levelMax equals to the highest normalized value power 2, a small number because < 1
 		// pass the value to a static var so we can access it from anywhere
 		
 		//body.velocity = movement * speed;
-		MicLoudness = LevelMax ();
+		/*MicLoudness = LevelMax ();
 		float Loudness = MicLoudness;
 		Loudness = Mathf.Pow (Loudness, 10);
 		Loudness = Loudness * 100;
-		Vector3 movement = new Vector3(0f, Loudness, Loudness);
+		Vector3 movement = new Vector3(0f, 0f, Loudness);
 		Debug.Log ("Loudness :" + MicLoudness);
 		if (MicLoudness > 0)
 			transform.Translate (movement * Time.deltaTime);
-		
+		*/
 	}
 	
 	bool _isInitialized;
