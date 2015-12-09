@@ -8,37 +8,64 @@ public class Boundary
 }
 public class PaddleController : MonoBehaviour {
 
-	public float MicLoudness;
-	
-	private string _device;
 	private Rigidbody body;
 
 	public float speed;
 	public Boundary boundary;
+
 	//public float loudness;
+	private float MicLoudness;
+	private string _device;
+	private AudioClip _clipRecord;
+	private int _sampleWindow;
+	private bool _isInitialized;
+	private AudioSource audio;
 
-	void InitMic(){
-		if(_device == null) _device = Microphone.devices[0];
-		_clipRecord = Microphone.Start(_device, true, 999, 44100);
-	}
-	void StopMicrophone()
-	{
-		Microphone.End(_device);
-	}
-	
-	
-	AudioClip _clipRecord = new AudioClip();
-	int _sampleWindow = 128;
-
-
-	void Start () {
+	void Awake () {
 		boundary.xMin = -1.5f;
 		boundary.xMax = 1.5f;
 		boundary.zMin = -4.85f;
 		boundary.zMax = -2.65f;
 		speed = 15.0f;
-		body = this.GetComponent<Rigidbody>();
+		body = GetComponent<Rigidbody>();
+		_clipRecord = new AudioClip();
+		_sampleWindow = 128;
+		audio = GetComponent<AudioSource>();
+		audio.clip = _clipRecord;
 	}
+
+
+	// Update is called once per physics frame
+	void FixedUpdate () {
+		MicLoudness = LevelMax ();
+		float loudness = MicLoudness;
+		loudness = Mathf.Pow (loudness, 10);
+		loudness = loudness * 10;
+
+		//float moveHorizontal = Input.GetAxis("Mouse X");
+		//float moveVertical = Input.GetAxis("Mouse Y");
+
+		float moveHorizontal = audio.pitch;
+
+		float moveVertical = loudness;
+		if (loudness == 0) {
+			moveVertical = -0.1f;
+		
+		}
+		Debug.Log ("Loudness :" + loudness);
+
+		Debug.Log (loudness);
+
+		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+		body.velocity = movement * speed;
+
+		body.position = new Vector3(
+			Mathf.Clamp (body.position.x, boundary.xMin, boundary.xMax),
+			0.0f,
+			Mathf.Clamp(body.position.z, boundary.zMin, boundary.zMax)
+		);
+	}
+
 	public float  LevelMax()
 	{
 		float levelMax = 0;
@@ -54,55 +81,21 @@ public class PaddleController : MonoBehaviour {
 				levelMax = wavePeak;
 			}
 		}
-		
 		return levelMax;
 	}
 
-	// Update is called once per physics frame
-	void FixedUpdate () {
-		MicLoudness = LevelMax ();
-		float loudness = MicLoudness;
-		loudness = Mathf.Pow (loudness, 10);
-		loudness = loudness * 100;
-
-
-		float moveHorizontal = Input.GetAxis("Mouse X");
-		//float moveVertical = Input.GetAxis("Mouse Y");
-
-		float moveVertical = loudness;
-		if (loudness == 0) {
-			moveVertical = -0.1f;
-		
-		}
-		//Debug.Log ("Loudness :" + loudness);
-
-		Debug.Log (loudness);
-
-		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-		body.velocity = movement * speed;
-
-		body.position = new Vector3(
-			Mathf.Clamp (body.position.x, boundary.xMin, boundary.xMax),
-			0.0f,
-			Mathf.Clamp(body.position.z, boundary.zMin, boundary.zMax)
-		);
-	}
-	bool _isInitialized;
 	// start mic when scene starts
-	void OnEnable()
-	{
+	void OnEnable() {
 		InitMic();
 		_isInitialized=true;
 	}
 	
 	//stop mic when loading a new level or quit application
-	void OnDisable()
-	{
+	void OnDisable() {
 		StopMicrophone();
 	}
 	
-	void OnDestroy()
-	{
+	void OnDestroy() {
 		StopMicrophone();
 	}
 	
@@ -127,5 +120,12 @@ public class PaddleController : MonoBehaviour {
 			_isInitialized=false;
 			
 		}
+	}
+	void InitMic() {
+		if(_device == null) _device = Microphone.devices[0];
+		_clipRecord = Microphone.Start(_device, true, 999, 44100);
+	}
+	void StopMicrophone() {
+		Microphone.End(_device);
 	}
 }
