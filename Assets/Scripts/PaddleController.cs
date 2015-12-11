@@ -51,6 +51,7 @@ public class PaddleController : MonoBehaviour {
 		string buffer = "";
 		float maxfreq = 0f;
 		for (int x = 0; x < spectrum.Length; x++) {
+
 			if (spectrum[x]>maxfreq) {
 				maxfreq = spectrum[x];
 				xvalue = x;
@@ -60,8 +61,10 @@ public class PaddleController : MonoBehaviour {
 			}
 			buffer = buffer + spectrum[x] + " ";
 		}
+
+		//Debug.Log (buffer);
 		//Debug.Log ("x : " + xvalue);
-		if(xvalue > 5) {
+		if(xvalue > 4) {
 			return true;
 		}
 		else {
@@ -120,10 +123,11 @@ public class PaddleController : MonoBehaviour {
 	}
 
 	// start mic when scene starts
-	void OnEnable() {
+	/*void OnEnable() {
+		Debug.Log ("enable");
 		InitMic();
 		_isInitialized=true;
-	}
+	}*/
 	
 	//stop mic when loading a new level or quit application
 	void OnDisable() {
@@ -137,19 +141,21 @@ public class PaddleController : MonoBehaviour {
 	
 	// make sure the mic gets started & stopped when application gets focused
 	void OnApplicationFocus(bool focus) {
+
 		if (focus)
 		{
 			//Debug.Log("Focus");
 			
 			if(!_isInitialized){
 				//Debug.Log("Init Mic");
+				Debug.Log ("focus");
 				InitMic();
 				_isInitialized=true;
 			}
 		}      
 		if (!focus)
 		{
-			//Debug.Log("Pause");
+			Debug.Log("Pause");
 			StopMicrophone();
 			//Debug.Log("Stop Mic");
 			_isInitialized=false;
@@ -157,14 +163,42 @@ public class PaddleController : MonoBehaviour {
 		}
 	}
 	void InitMic() {
-		if(_device == null) _device = Microphone.devices[0];
-		_clipRecord = Microphone.Start(_device, true, 999, 44100);
-		while (!(Microphone.GetPosition(_device)>0)) {
+		foreach (string device in Microphone.devices) {
+			Debug.Log ("Name: " + device);
+		}
+		//Debug.Log (_device);
+		//if(_device == null) _device = Microphone.devices[0];
+		//
+		//
+		//Debug.Log (_device);
+		int min;
+		int max;
+		Microphone.GetDeviceCaps (Microphone.devices [0], out min, out max);
+		Debug.Log (Microphone.devices[0]);
+		Debug.Log (min);
+		Debug.Log (max);
+
+		_clipRecord = Microphone.Start(Microphone.devices [0], true, 999, 44100);
+		while (!(Microphone.GetPosition(Microphone.devices [0])>0)) {
 		}
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 
 	}
+	/*void Update(){
+		if (!Microphone.IsRecording (Microphone.devices[1]))
+			InitMic ();
+
+
+	}
+	/*void LateUpdate(){
+			if (Microphone.IsRecording (Microphone.devices[1])) {
+				StopMicrophone ();
+			}
+	}*/
+
+
 	void StopMicrophone() {
-		Microphone.End(_device);
+		Microphone.End("Built-in Microphone");
+		//GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 	}
 }
