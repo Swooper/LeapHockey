@@ -36,6 +36,10 @@ public class ScoreManager : MonoBehaviour {
 		puck = GameObject.Instantiate(puckPrefab);
 		player = GameObject.Instantiate(playerPrefab);
 		enemy = GameObject.Instantiate(enemyPrefab);
+		puck.GetComponent<Puck> ().player1obj = player;
+		puck.GetComponent<Puck> ().player2obj = enemy;
+
+
 
 		ResetPositions(true);
 	}
@@ -56,7 +60,11 @@ public class ScoreManager : MonoBehaviour {
 		hud.UpdateScore(playerScore, enemyScore);
 		ResetPositions(player);
 	}
-
+	void Update()
+	{
+		if(Input.GetKeyDown (KeyCode.P))
+			puck.GetComponent<Puck> ().init ();
+	}
 	// playerSide true if the puck should spawn on the player's side,
 	// false if it should be on the other side
 	private void ResetPositions(bool playerSide) {

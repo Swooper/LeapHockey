@@ -2,17 +2,17 @@
 using System.Collections;
 
 [System.Serializable]
-public class Boundary
+public class Boundary2
 {
 	public float xMin, xMax, zMin, zMax;
 }
-public class PaddleController : MonoBehaviour {
-
+public class OpponentController : MonoBehaviour {
+	
 	private Rigidbody body;
-
+	
 	public float speed;
-	public Boundary boundary;
-
+	public Boundary2 boundary2;
+	
 	//public float loudness;
 	private float MicLoudness;
 	private string _device;
@@ -22,11 +22,13 @@ public class PaddleController : MonoBehaviour {
 	private AudioSource audio;
 	float[] spectrum;
 	
+
 	void Awake () {
-		boundary.xMin = -1.5f;
-		boundary.xMax = 1.5f;
-		boundary.zMin = -4.85f;
-		boundary.zMax = -2.65f;
+		boundary2.xMin = -1.5f;
+		boundary2.xMax = 1.5f;
+		boundary2.zMin = 2.65f;
+		boundary2.zMax = 4.85f;
+
 		speed = 15.0f;
 		body = GetComponent<Rigidbody>();
 		_clipRecord = new AudioClip();
@@ -35,22 +37,22 @@ public class PaddleController : MonoBehaviour {
 		audio.clip = _clipRecord;
 		spectrum = new float[256];
 	}
-
+	
 	private bool getHorizontal() {
 		audio.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
-		int i = 1;
-		while (i < spectrum.Length-1) {
+		//int i = 1;
+		/*while (i < spectrum.Length-1) {
 			Debug.DrawLine(new Vector3(i - 1, spectrum[i] + 10, 0), new Vector3(i, spectrum[i + 1] + 10, 0), Color.red);
 			Debug.DrawLine(new Vector3(i - 1, Mathf.Log(spectrum[i - 1]) + 10, 2), new Vector3(i, Mathf.Log(spectrum[i]) + 10, 2), Color.cyan);
 			Debug.DrawLine(new Vector3(Mathf.Log(i - 1), spectrum[i - 1] - 10, 1), new Vector3(Mathf.Log(i), spectrum[i] - 10, 1), Color.green);
 			Debug.DrawLine(new Vector3(Mathf.Log(i - 1), Mathf.Log(spectrum[i - 1]), 3), new Vector3(Mathf.Log(i), Mathf.Log(spectrum[i]), 3), Color.yellow);
 			i++;
-		}
+		}*/
 		int xvalue =0;
 		string buffer = "";
 		float maxfreq = 0f;
 		for (int x = 0; x < spectrum.Length; x++) {
-
+			
 			if (spectrum[x]>maxfreq) {
 				maxfreq = spectrum[x];
 				xvalue = x;
@@ -60,7 +62,7 @@ public class PaddleController : MonoBehaviour {
 			}
 			buffer = buffer + spectrum[x] + " ";
 		}
-
+		
 		//Debug.Log (buffer);
 		//Debug.Log ("x : " + xvalue);
 		if(xvalue > 4) {
@@ -70,17 +72,15 @@ public class PaddleController : MonoBehaviour {
 			return false;
 		}
 	}
-
+	
 	// Update is called once per physics frame
 	void FixedUpdate () {
 		// Vertical movement
-
-
 		MicLoudness = LevelMax ();
 		float loudness = MicLoudness;
-		float moveVertical = loudness;
+		float moveVertical = loudness * -1;
 		if (loudness < 0.01) {
-			moveVertical = -0.1f;
+			moveVertical = 0.1f;
 		}
 		//loudness = loudness * 10.0f;
 		// Horizontal movement
@@ -96,22 +96,21 @@ public class PaddleController : MonoBehaviour {
 		//Putting it together
 		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 		body.velocity = movement * speed;
-
+		
 		body.position = new Vector3(
-			Mathf.Clamp (body.position.x, boundary.xMin, boundary.xMax),
+			Mathf.Clamp (body.position.x, boundary2.xMin, boundary2.xMax),
 			0.0f,
-			Mathf.Clamp(body.position.z, boundary.zMin, boundary.zMax)
-		);
+			Mathf.Clamp(body.position.z, boundary2.zMin, boundary2.zMax)
+			);
 		loudness = 0f;
-
 	}
-
+	
 	public float  LevelMax()
 	{
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
 		//Debug.Log (waveData);
-		int micPosition = Microphone.GetPosition(Microphone.devices [1])-(_sampleWindow+1); // null means the first microphone
+		int micPosition = Microphone.GetPosition(Microphone.devices [0])-(_sampleWindow+1); // null means the first microphone
 		if (micPosition < 0) return 0;
 		_clipRecord.GetData(waveData, micPosition);
 		// Getting a peak on the last 128 samples
@@ -123,13 +122,13 @@ public class PaddleController : MonoBehaviour {
 		}
 		return levelMax;
 	}
-
+	
 	// start mic when scene starts
-	//void OnEnable() {
-	//	Debug.Log ("enablep");
-	//	InitMic();
-	//	_isInitialized=true;
-	//}
+	/*void OnEnable() {
+		Debug.Log ("enable");
+		InitMic();
+		_isInitialized=true;
+	}*/
 	
 	//stop mic when loading a new level or quit application
 	void OnDisable() {
@@ -143,48 +142,35 @@ public class PaddleController : MonoBehaviour {
 	
 	// make sure the mic gets started & stopped when application gets focused
 	void OnApplicationFocus(bool focus) {
-
+		
 		/*if (focus)
 		{
 			//Debug.Log("Focus");
 			
 			if(!_isInitialized){
 				//Debug.Log("Init Mic");
-				Debug.Log ("focusp");
+				StartCoroutine("oppenentMicInit");
+			
+				Debug.Log ("focuso");
 				InitMic();
 				_isInitialized=true;
 			}
-		} */     
+		} */
 		if (!focus)
 		{
-			Debug.Log("Pausep");
+			//Debug.Log("Pauseo");
 			StopMicrophone();
 			//Debug.Log("Stop Mic");
 			_isInitialized=false;
-			
+
 		}
 	}
 	public void InitMic() {
-		//foreach (string device in Microphone.devices) {
-		//	Debug.Log ("Name: " + device);
-		//}
-		//Debug.Log (_device);
-		//if(_device == null) _device = Microphone.devices[0];
-		//
-		//
-		//Debug.Log (_device);
-		//int min;
-		//int max;
-		//Microphone.GetDeviceCaps (Microphone.devices [1], out min, out max);
-		//Debug.Log (Microphone.devices[1]);
-		//Debug.Log (min);
-		//Debug.Log (max);
-
-		_clipRecord = Microphone.Start(Microphone.devices [1], true, 999, 44100);
-		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
+		_clipRecord = Microphone.Start(Microphone.devices [0], true, 999, 44100);
+		while (!(Microphone.GetPosition(Microphone.devices [0])>0)) {
 		}
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
-
+		
 	}
 	/*void Update(){
 		if (!Microphone.IsRecording (Microphone.devices[1]))
@@ -197,10 +183,11 @@ public class PaddleController : MonoBehaviour {
 				StopMicrophone ();
 			}
 	}*/
-
-
+	
+	
 	public void StopMicrophone() {
-		Microphone.End(Microphone.devices [1]);
+		Microphone.End(Microphone.devices [0]);
 		//GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 	}
 }
+
