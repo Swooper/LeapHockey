@@ -30,7 +30,7 @@ public class PaddleController : MonoBehaviour {
 		speed = 15.0f;
 		body = GetComponent<Rigidbody>();
 		_clipRecord = new AudioClip();
-		_sampleWindow = 128;
+		_sampleWindow = 256;
 		audio = GetComponent<AudioSource>();
 		audio.clip = _clipRecord;
 		spectrum = new float[256];
