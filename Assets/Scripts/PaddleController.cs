@@ -34,7 +34,7 @@ public class PaddleController : MonoBehaviour {
 		audio = GetComponent<AudioSource>();
 		audio.clip = _clipRecord;
 		spectrum = new float[256];
-		//Time.timeScale = 0.7f;
+		Time.timeScale = 0.6f;
 	}
 
 	private bool getHorizontal() {
