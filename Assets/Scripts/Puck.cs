@@ -10,16 +10,7 @@ public class Puck : MonoBehaviour {
 	public PaddleController player1;
 	public OpponentController player2;
 	// Use this for initialization
-	bool checkIfPuckIsNotMoving(){
-		currZPos = transform.position.z;
-		if (currZPos == lastZPos) {
-			//print ("Not moving");
-			return true;
-		} 
-		else 
-			return false;
-	}
-	bool puckDirection(){
+	bool PuckDirection(){
 		currZPos = transform.position.z;
 		if(currZPos > lastZPos) {
 			//print("moving forward");
@@ -29,34 +20,44 @@ public class Puck : MonoBehaviour {
 			return false;
 		
 	}
+
 	IEnumerator switchmices()
-	{	Debug.Log ("switch");
+	{	yield return new WaitForSeconds(1f);
+		Debug.Log ("switch");
 		player1.InitMic ();
 		player1._isInitialized = true;
-		Debug.Log ("1");
-		yield return new WaitForSeconds(4f);
-		player1.StopMicrophone ();
-		player1._isInitialized = false;
-		Debug.Log ("1stopped");
+		Debug.Log ("switchdone");
 
-		yield return new WaitForSeconds(2f);
+
+
+	}
+
+	public void InitPlayer1(){
+		if (player2._isInitialized == true) {
+			player2.StopMicrophone ();
+			player2._isInitialized = false;
+		}
+		player1.InitMic ();
+		player1._isInitialized = true;
+	}
+
+	public void InitPlayer2(){
+		Debug.Log ("initplayer2");
+		if (player1._isInitialized == true) {
+			player1.StopMicrophone ();
+			player1._isInitialized = false;
+		}
 		player2.InitMic ();
 		player2._isInitialized = true;
-		Debug.Log ("2on");
-		yield return new WaitForSeconds(4f);
-		player2.StopMicrophone ();
-		player2._isInitialized = false;
-		Debug.Log ("2off");
-
-
-		//	player1._isInitialized = true;
-		//	player1._isInitialized = true;
+	
 	}
 
 	void Start () {
 		Physics.IgnoreCollision(this.GetComponent<MeshCollider>(), GameObject.Find ("NeutralZone").GetComponent<BoxCollider>());
 		player1 = player1obj.GetComponent<PaddleController> ();
 		player2 = player2obj.GetComponent<OpponentController> ();
+		currZPos = transform.position.z;
+		lastZPos = transform.position.z;
 
 	}
 	public void init(){
@@ -65,20 +66,17 @@ public class Puck : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
+		currZPos = transform.position.z;
 
-
-		//currZPos = transform.position.z;
-		//if (checkIfPuckIsNotMoving ()) {
-		//
-		//}
-		//if (currZPos <= 0f && player1._isInitialized == false) {
-		//	player1.InitMic ();
-		//	player1._isInitialized = true;
-		//} else if(player1._isInitialized == true) {
-		//	player1.StopMicrophone ();
-		//	player1._isInitialized = false;
-		//}
-		//lastZPos = currZPos;
+		if (currZPos > -2.65f && player1._isInitialized == true && PuckDirection() == true) {
+	
+			InitPlayer2();
+		}
+		if (currZPos < 2.65f && player2._isInitialized == true && PuckDirection() == false) {
+		
+			InitPlayer1();
+		}
+		lastZPos = currZPos;
 	}
 
 
