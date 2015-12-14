@@ -18,7 +18,7 @@ public class OpponentController : MonoBehaviour {
 	private string _device;
 	private AudioClip _clipRecord;
 	private int _sampleWindow;
-	public bool _isInitialized;
+	public bool _isInitialized = false;
 	private AudioSource audio;
 	float[] spectrum;
 	
@@ -76,33 +76,50 @@ public class OpponentController : MonoBehaviour {
 	// Update is called once per physics frame
 	void FixedUpdate () {
 		// Vertical movement
-		MicLoudness = LevelMax ();
-		float loudness = MicLoudness;
-		float moveVertical = loudness * -1;
-		if (loudness < 0.01) {
-			moveVertical = 0.1f;
-		}
-		//loudness = loudness * 10.0f;
-		// Horizontal movement
-		float moveHorizontal = 0.0f;
-		if(getHorizontal()) {
-			moveHorizontal = 0.1f;
-		}
-		else {
-			moveHorizontal = -0.1f;
-		}
-		//float moveHorizontal = Input.GetAxis ("Horizontal");
 
-		//Putting it together
-		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-		body.velocity = movement * speed;
+		if (_isInitialized == false) {
+			if (transform.position.x > 0)
+				transform.position += Vector3.left * Time.deltaTime;
+			else if (transform.position.x < 0)
+				transform.position += Vector3.right * Time.deltaTime;
+			if (transform.position.z > 4)
+			{
+				transform.position += Vector3.back * Time.deltaTime;
+			}
+			else if (transform.position.z < 4)
+			{
+				transform.position += Vector3.forward * Time.deltaTime;
+			}
+		} 
+		else {
+			MicLoudness = LevelMax ();
+			float loudness = MicLoudness;
+			float moveVertical = loudness * -1;
+
+			// Horizontal movement
+			float moveHorizontal = 0.0f;
+			if (getHorizontal ()) {
+				moveHorizontal = 0.1f;
+			} else {
+				moveHorizontal = -0.1f;
+			}
+			//if there is no noize the paddle floats straight back
+			if (loudness < 0.01) {
+				moveVertical = 0.1f;
+				moveHorizontal = 0f;
+			}
+
+			//Putting it together
+			Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+			body.velocity = movement * speed;
 		
-		body.position = new Vector3(
+			body.position = new Vector3 (
 			Mathf.Clamp (body.position.x, boundary2.xMin, boundary2.xMax),
 			0.0f,
-			Mathf.Clamp(body.position.z, boundary2.zMin, boundary2.zMax)
+			Mathf.Clamp (body.position.z, boundary2.zMin, boundary2.zMax)
 			);
-		loudness = 0f;
+			loudness = 0f;
+		}
 	}
 	
 	public float  LevelMax()
