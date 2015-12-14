@@ -35,6 +35,7 @@ public class PaddleController : MonoBehaviour {
 		audio = GetComponent<AudioSource>();
 		audio.clip = _clipRecord;
 		spectrum = new float[256];
+		//Time.timeScale = 0.7f;
 	}
 
 	private bool getHorizontal() {
@@ -167,7 +168,7 @@ public class PaddleController : MonoBehaviour {
 			Debug.Log ("Name: " + device);
 		}
 		//Debug.Log (_device);
-		//if(_device == null) _device = Microphone.devices[0];
+		if(_device == null) _device = Microphone.devices[0];
 		//
 		//
 		//Debug.Log (_device);
