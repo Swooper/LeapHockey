@@ -8,7 +8,7 @@ public class Boundary
 }
 public class PaddleController : MonoBehaviour {
 	private Rigidbody body;
-	private GameObject model;
+	public GameObject model;
 
 	public float speed;
 	public Boundary boundary;
@@ -41,10 +41,10 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		// Vertical movement
 		if (_isInitialized == false) {
-			if (model.transform.position.x > 0f) {
+			if (model.transform.position.x > -0.5f) {
 				model.transform.position += Vector3.left * Time.deltaTime;
 			}
-			else if (model.transform.position.x < 0f) {
+			else if (model.transform.position.x < -0.5f) {
 				model.transform.position += Vector3.right * Time.deltaTime;
 			}
 			if (model.transform.position.z > -4) {

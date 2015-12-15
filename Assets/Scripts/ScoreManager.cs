@@ -9,8 +9,8 @@ public class ScoreManager : MonoBehaviour {
 
 	private HUD hud;
 
-	private GameObject player;
-	private GameObject enemy;
+	private PaddleController player;
+	private OpponentController enemy;
 	private GameObject puck;
 	public GameObject playerPrefab;
 	public GameObject enemyPrefab;
@@ -34,10 +34,10 @@ public class ScoreManager : MonoBehaviour {
 		enemyPuckStart = GameObject.Find("EnemyPuckStart");
 
 		puck = GameObject.Instantiate(puckPrefab);
-		player = GameObject.Instantiate(playerPrefab);
-		enemy = GameObject.Instantiate(enemyPrefab);
-		puck.GetComponent<Puck> ().player1obj = player;
-		puck.GetComponent<Puck> ().player2obj = enemy;
+		player = GameObject.Instantiate(playerPrefab).GetComponent<PaddleController>();
+		enemy = GameObject.Instantiate(enemyPrefab).GetComponent<OpponentController>();
+		puck.GetComponent<Puck> ().player1obj = player.gameObject;
+		puck.GetComponent<Puck> ().player2obj = enemy.gameObject;
 
 		ResetPositions(true);
 	}
@@ -66,8 +66,9 @@ public class ScoreManager : MonoBehaviour {
 	// playerSide true if the puck should spawn on the player's side,
 	// false if it should be on the other side
 	private void ResetPositions(bool playerSide) {
-		player.transform.position = playerStartPos.transform.position;
-		enemy.transform.position = enemyStartPos.transform.position;
+		player.model.transform.position = playerStartPos.transform.position;
+		enemy.model.transform.position = enemyStartPos.transform.position;
+
 		puck.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
 		if(playerSide) {
 			puck.transform.position = playerPuckStart.transform.position;
