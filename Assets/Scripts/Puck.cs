@@ -53,7 +53,6 @@ public class Puck : MonoBehaviour {
 	}
 
 	void Start () {
-		Physics.IgnoreCollision(this.GetComponent<MeshCollider>(), GameObject.Find ("NeutralZone").GetComponent<BoxCollider>());
 		player1 = player1obj.GetComponent<PaddleController> ();
 		player2 = player2obj.GetComponent<OpponentController> ();
 		currZPos = transform.position.z;
