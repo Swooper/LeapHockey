@@ -7,14 +7,12 @@ public class Boundary
 	public float xMin, xMax, zMin, zMax;
 }
 public class PaddleController : MonoBehaviour {
-
 	private Rigidbody body;
-	//private GameObject model;
+	private GameObject model;
 
 	public float speed;
 	public Boundary boundary;
 
-	//public float loudness;
 	private float MicLoudness;
 	private string _device;
 	private AudioClip _clipRecord;
@@ -29,7 +27,8 @@ public class PaddleController : MonoBehaviour {
 		boundary.zMin = -4.85f;
 		boundary.zMax = -2.85f;
 		speed = 15.0f;
-		body = transform.FindChild("PaddleModel").GetComponent<Rigidbody>();
+		model = transform.FindChild("PaddleModel").gameObject;
+		body = model.GetComponent<Rigidbody>();
 		_clipRecord = new AudioClip();
 		_sampleWindow = 256;
 		audio = GetComponent<AudioSource>();
@@ -42,17 +41,17 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		// Vertical movement
 		if (_isInitialized == false) {
-			if (transform.position.x > 0f) {
-				transform.position += Vector3.left * Time.deltaTime;
+			if (model.transform.position.x > 0f) {
+				model.transform.position += Vector3.left * Time.deltaTime;
 			}
-			else if (transform.position.x < 0f) {
-				transform.position += Vector3.right * Time.deltaTime;
+			else if (model.transform.position.x < 0f) {
+				model.transform.position += Vector3.right * Time.deltaTime;
 			}
-			if (transform.position.z > -4) {
-				transform.position += Vector3.back * Time.deltaTime;
+			if (model.transform.position.z > -4) {
+				model.transform.position += Vector3.back * Time.deltaTime;
 			}
-			else if (transform.position.z < -4) {
-				transform.position += Vector3.forward * Time.deltaTime;
+			else if (model.transform.position.z < -4) {
+				model.transform.position += Vector3.forward * Time.deltaTime;
 			}
 		}
 		else {
@@ -109,8 +108,7 @@ public class PaddleController : MonoBehaviour {
 		}
 	}
 		
-	public float  LevelMax()
-	{
+	public float  LevelMax() {
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
 		int micPosition = Microphone.GetPosition(Microphone.devices [1])-(_sampleWindow+1); // null means the first microphone
@@ -149,8 +147,8 @@ public class PaddleController : MonoBehaviour {
 
 	public void InitMic() {
 		_clipRecord = Microphone.Start(Microphone.devices [1], true, 999, 44100);
-		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
-		}
+		// This empty while loop looks weird, but this is to make sure we wait until we have audio input ready.
+		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) { }
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 
 	}

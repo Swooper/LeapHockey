@@ -3,8 +3,8 @@ using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
 
-	private int playerScore;
-	private int enemyScore;
+	private int player1Score;
+	private int player2Score;
 	private int winScore;
 
 	private HUD hud;
@@ -22,8 +22,8 @@ public class ScoreManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		playerScore = 0;
-		enemyScore = 0;
+		player1Score = 0;
+		player2Score = 0;
 		winScore = 5;
 
 		hud = GameObject.Find("GUICanvas").GetComponent<HUD>();
@@ -44,18 +44,18 @@ public class ScoreManager : MonoBehaviour {
 
 	public void AddScore(bool player) {
 		if(player) {
-			playerScore++;
-			if(playerScore >= winScore) {
+			player1Score++;
+			if(player1Score >= winScore) {
 				// Show victory screen, end match
 			}
 		}
 		else {
-			enemyScore++;
-			if(enemyScore >= winScore) {
+			player2Score++;
+			if(player2Score >= winScore) {
 				// Show defeat screen, end match
 			}
 		}
-		hud.UpdateScore(playerScore, enemyScore);
+		hud.UpdateScore(player1Score, player2Score);
 		ResetPositions(player);
 	}
 	void Update()

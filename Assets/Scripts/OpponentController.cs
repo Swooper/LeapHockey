@@ -9,11 +9,10 @@ public class Boundary2
 public class OpponentController : MonoBehaviour {
 	
 	private Rigidbody body;
-	//private GameObject model;
+	private GameObject model;
 	public float speed;
 	public Boundary2 boundary2;
-	
-	//public float loudness;
+
 	private float MicLoudness;
 	private string _device;
 	private AudioClip _clipRecord;
@@ -28,10 +27,9 @@ public class OpponentController : MonoBehaviour {
 		boundary2.xMax = 1.5f;
 		boundary2.zMin = 2.65f;
 		boundary2.zMax = 4.85f;
-
-
 		speed = 15.0f;
-		body = transform.FindChild("PaddleModel2").gameObject.GetComponent<Rigidbody>();
+		model = transform.FindChild("PaddleModel2").gameObject;
+		body = model.GetComponent<Rigidbody>();
 		_clipRecord = new AudioClip();
 		_sampleWindow = 128;
 		audio = GetComponent<AudioSource>();
@@ -45,7 +43,6 @@ public class OpponentController : MonoBehaviour {
 		string buffer = "";
 		float maxfreq = 0f;
 		for (int x = 0; x < spectrum.Length; x++) {
-
 			if (spectrum[x]>maxfreq) {
 				maxfreq = spectrum[x];
 				xvalue = x;
@@ -56,7 +53,7 @@ public class OpponentController : MonoBehaviour {
 			buffer = buffer + spectrum[x] + " ";
 		}
 
-		if(xvalue > 10) {
+		if (xvalue > 10) {
 			return true;
 		}
 		else {
@@ -67,19 +64,18 @@ public class OpponentController : MonoBehaviour {
 	// Update is called once per physics frame
 	void FixedUpdate () {
 		// Vertical movement
-
 		if (_isInitialized == false) {
-			if (transform.position.x > 0)
-				transform.position += Vector3.left * Time.deltaTime;
-			else if (transform.position.x < 0)
-				transform.position += Vector3.right * Time.deltaTime;
-			if (transform.position.z > 4)
-			{
-				transform.position += Vector3.back * Time.deltaTime;
+			if (model.transform.position.x > 0) {
+				model.transform.position += Vector3.left * Time.deltaTime;
 			}
-			else if (transform.position.z < 4)
-			{
-				transform.position += Vector3.forward * Time.deltaTime;
+			else if (model.transform.position.x < 0) {
+				model.transform.position += Vector3.right * Time.deltaTime;
+			}
+			if (model.transform.position.z > 4) {
+				model.transform.position += Vector3.back * Time.deltaTime;
+			}
+			else if (model.transform.position.z < 4) {
+				model.transform.position += Vector3.forward * Time.deltaTime;
 			}
 		} 
 		else {
@@ -111,8 +107,7 @@ public class OpponentController : MonoBehaviour {
 		}
 	}
 	
-	public float  LevelMax()
-	{
+	public float  LevelMax() {
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
 		//Debug.Log (waveData);
@@ -129,13 +124,6 @@ public class OpponentController : MonoBehaviour {
 		return levelMax;
 	}
 	
-	// start mic when scene starts
-	/*void OnEnable() {
-		Debug.Log ("enable");
-		InitMic();
-		_isInitialized=true;
-	}*/
-	
 	//stop mic when loading a new level or quit application
 	void OnDisable() {
 		StopMicrophone();
@@ -148,52 +136,20 @@ public class OpponentController : MonoBehaviour {
 	
 	// make sure the mic gets started & stopped when application gets focused
 	void OnApplicationFocus(bool focus) {
-		
-		/*if (focus)
-		{
-			//Debug.Log("Focus");
-			
-			if(!_isInitialized){
-				//Debug.Log("Init Mic");
-				StartCoroutine("oppenentMicInit");
-			
-				Debug.Log ("focuso");
-				InitMic();
-				_isInitialized=true;
-			}
-		} */
-		if (!focus)
-		{
-			//Debug.Log("Pauseo");
+		if (!focus) {
 			StopMicrophone();
-			//Debug.Log("Stop Mic");
 			_isInitialized=false;
-
 		}
 	}
 	public void InitMic() {
 		_clipRecord = Microphone.Start(Microphone.devices [0], true, 999, 44100);
-		while (!(Microphone.GetPosition(Microphone.devices [0])>0)) {
-		}
+		// This empty while loop looks weird, but this is to make sure we wait until we have audio input ready.
+		while (!(Microphone.GetPosition(Microphone.devices [0])>0)) { }
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
-		
 	}
-	/*void Update(){
-		if (!Microphone.IsRecording (Microphone.devices[1]))
-			InitMic ();
-
-
-	}
-	/*void LateUpdate(){
-			if (Microphone.IsRecording (Microphone.devices[1])) {
-				StopMicrophone ();
-			}
-	}*/
-	
 	
 	public void StopMicrophone() {
 		Microphone.End(Microphone.devices [0]);
-		//GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 	}
 }
 
