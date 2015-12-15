@@ -101,7 +101,7 @@ public class PaddleController : MonoBehaviour {
 			}
 			buffer = buffer + spectrum[x] + " ";
 		}
-		if (xvalue > 4) {
+		if (xvalue > 10) {
 			return true;
 		}
 		else {
@@ -149,8 +149,8 @@ public class PaddleController : MonoBehaviour {
 
 	public void InitMic() {
 		_clipRecord = Microphone.Start(Microphone.devices [1], true, 999, 44100);
-//		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
-//		}
+		// This empty loop looks weird but it's to make the game wait until we have audio input.
+		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) { }
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 
 	}
