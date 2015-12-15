@@ -193,8 +193,8 @@ public class PaddleController : MonoBehaviour {
 		//Debug.Log (max);
 
 		_clipRecord = Microphone.Start(Microphone.devices [1], true, 999, 44100);
-		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
-		}
+		//while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
+		//}
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 
 	}
