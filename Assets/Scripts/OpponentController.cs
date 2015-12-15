@@ -24,10 +24,11 @@ public class OpponentController : MonoBehaviour {
 	
 
 	void Awake () {
-		boundary2.xMin = 0.265f;
-		boundary2.xMax = 3.250f;
-		boundary2.zMin = 4.85f;
-		boundary2.zMax = 2.65f;
+		boundary2.xMin = -1.5f;
+		boundary2.xMax = 1.5f;
+		boundary2.zMin = 2.65f;
+		boundary2.zMax = 4.85f;
+
 
 		speed = 15.0f;
 		body = transform.FindChild("PaddleModel2").gameObject.GetComponent<Rigidbody>();
@@ -55,7 +56,7 @@ public class OpponentController : MonoBehaviour {
 			buffer = buffer + spectrum[x] + " ";
 		}
 
-		if(xvalue > 18) {
+		if(xvalue > 10) {
 			return true;
 		}
 		else {

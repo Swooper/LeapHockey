@@ -42,10 +42,10 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		// Vertical movement
 		if (_isInitialized == false) {
-			if (transform.position.x > -0f) {
+			if (transform.position.x > 0f) {
 				transform.position += Vector3.left * Time.deltaTime;
 			}
-			else if (transform.position.x < -0f) {
+			else if (transform.position.x < 0f) {
 				transform.position += Vector3.right * Time.deltaTime;
 			}
 			if (transform.position.z > -4) {
@@ -149,8 +149,8 @@ public class PaddleController : MonoBehaviour {
 
 	public void InitMic() {
 		_clipRecord = Microphone.Start(Microphone.devices [1], true, 999, 44100);
-		// This empty loop looks weird but it's to make the game wait until we have audio input.
-		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) { }
+		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
+		}
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 
 	}
