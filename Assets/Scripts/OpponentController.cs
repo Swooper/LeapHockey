@@ -35,7 +35,7 @@ public class OpponentController : MonoBehaviour {
 		_sampleWindow = 128;
 		audio = GetComponent<AudioSource>();
 		audio.clip = _clipRecord;
-		spectrum = new float[256];
+		spectrum = new float[512];
 	}
 	
 	private bool getHorizontal() {
@@ -52,7 +52,7 @@ public class OpponentController : MonoBehaviour {
 		string buffer = "";
 		float maxfreq = 0f;
 		for (int x = 0; x < spectrum.Length; x++) {
-			
+
 			if (spectrum[x]>maxfreq) {
 				maxfreq = spectrum[x];
 				xvalue = x;
@@ -65,7 +65,7 @@ public class OpponentController : MonoBehaviour {
 		
 		//Debug.Log (buffer);
 		//Debug.Log ("x : " + xvalue);
-		if(xvalue > 4) {
+		if(xvalue > 16) {
 			return true;
 		}
 		else {
@@ -184,8 +184,8 @@ public class OpponentController : MonoBehaviour {
 	}
 	public void InitMic() {
 		_clipRecord = Microphone.Start(Microphone.devices [0], true, 999, 44100);
-		//while (!(Microphone.GetPosition(Microphone.devices [0])>0)) {
-		//}
+		while (!(Microphone.GetPosition(Microphone.devices [0])>0)) {
+		}
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 		
 	}
