@@ -9,7 +9,7 @@ public class Boundary2
 public class OpponentController : MonoBehaviour {
 	
 	private Rigidbody body;
-	
+	//private GameObject model;
 	public float speed;
 	public Boundary2 boundary2;
 	
@@ -24,13 +24,13 @@ public class OpponentController : MonoBehaviour {
 	
 
 	void Awake () {
-		boundary2.xMin = -1.5f;
-		boundary2.xMax = 1.5f;
-		boundary2.zMin = 2.65f;
-		boundary2.zMax = 4.85f;
+		boundary2.xMin = 0.265f;
+		boundary2.xMax = 3.250f;
+		boundary2.zMin = 4.85f;
+		boundary2.zMax = 2.65f;
 
 		speed = 15.0f;
-		body = GetComponent<Rigidbody>();
+		body = transform.FindChild("PaddleModel2").gameObject.GetComponent<Rigidbody>();
 		_clipRecord = new AudioClip();
 		_sampleWindow = 128;
 		audio = GetComponent<AudioSource>();
@@ -83,8 +83,7 @@ public class OpponentController : MonoBehaviour {
 		} 
 		else {
 			MicLoudness = LevelMax ();
-			float loudness = MicLoudness;
-			float moveVertical = loudness * -1;
+			float moveVertical = MicLoudness * -1;
 
 			// Horizontal movement
 			float moveHorizontal = 0.0f;
@@ -94,7 +93,7 @@ public class OpponentController : MonoBehaviour {
 				moveHorizontal = -0.1f;
 			}
 			//if there is no noize the paddle floats straight back
-			if (loudness < 0.01) {
+			if (MicLoudness < 0.01) {
 				moveVertical = 0.1f;
 				moveHorizontal = 0f;
 			}
@@ -104,11 +103,10 @@ public class OpponentController : MonoBehaviour {
 			body.velocity = movement * speed;
 		
 			body.position = new Vector3 (
-			Mathf.Clamp (body.position.x, boundary2.xMin, boundary2.xMax),
-			0.0f,
-			Mathf.Clamp (body.position.z, boundary2.zMin, boundary2.zMax)
+				Mathf.Clamp (body.position.x, boundary2.xMin, boundary2.xMax),
+				0.0f,
+				Mathf.Clamp (body.position.z, boundary2.zMin, boundary2.zMax)
 			);
-			loudness = 0f;
 		}
 	}
 	

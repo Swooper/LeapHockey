@@ -39,8 +39,6 @@ public class ScoreManager : MonoBehaviour {
 		puck.GetComponent<Puck> ().player1obj = player;
 		puck.GetComponent<Puck> ().player2obj = enemy;
 
-
-
 		ResetPositions(true);
 	}
 

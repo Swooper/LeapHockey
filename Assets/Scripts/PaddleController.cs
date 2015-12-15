@@ -9,7 +9,7 @@ public class Boundary
 public class PaddleController : MonoBehaviour {
 
 	private Rigidbody body;
-	private GameObject model;
+	//private GameObject model;
 
 	public float speed;
 	public Boundary boundary;
@@ -24,13 +24,12 @@ public class PaddleController : MonoBehaviour {
 	float[] spectrum;
 	
 	void Awake () {
-		boundary.xMin = -2.0f;
+		boundary.xMin = -1.5f;
 		boundary.xMax = 1.5f;
 		boundary.zMin = -4.85f;
 		boundary.zMax = -2.85f;
 		speed = 15.0f;
-		model = GameObject.Find("PaddleModel");
-		body = model.GetComponent<Rigidbody>();
+		body = transform.FindChild("PaddleModel").GetComponent<Rigidbody>();
 		_clipRecord = new AudioClip();
 		_sampleWindow = 256;
 		audio = GetComponent<AudioSource>();
@@ -43,17 +42,17 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		// Vertical movement
 		if (_isInitialized == false) {
-			if (model.transform.position.x > -0.5f) {
-				model.transform.position += Vector3.left * Time.deltaTime;
+			if (transform.position.x > -0f) {
+				transform.position += Vector3.left * Time.deltaTime;
 			}
-			else if (model.transform.position.x < -0.5f) {
-				model.transform.position += Vector3.right * Time.deltaTime;
+			else if (transform.position.x < -0f) {
+				transform.position += Vector3.right * Time.deltaTime;
 			}
-			if (model.transform.position.z > -4) {
-				model.transform.position += Vector3.back * Time.deltaTime;
+			if (transform.position.z > -4) {
+				transform.position += Vector3.back * Time.deltaTime;
 			}
-			else if (model.transform.position.z < -4) {
-				model.transform.position += Vector3.forward * Time.deltaTime;
+			else if (transform.position.z < -4) {
+				transform.position += Vector3.forward * Time.deltaTime;
 			}
 		}
 		else {
@@ -102,7 +101,7 @@ public class PaddleController : MonoBehaviour {
 			}
 			buffer = buffer + spectrum[x] + " ";
 		}
-		if(xvalue > 18) {
+		if (xvalue > 4) {
 			return true;
 		}
 		else {
@@ -115,7 +114,9 @@ public class PaddleController : MonoBehaviour {
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
 		int micPosition = Microphone.GetPosition(Microphone.devices [1])-(_sampleWindow+1); // null means the first microphone
-		if (micPosition < 0) return 0;
+		if (micPosition < 0) {
+			return 0;
+		}
 		_clipRecord.GetData(waveData, micPosition);
 		// Getting a peak on the last 128 samples
 		for (int i = 0; i < _sampleWindow; i++) {
@@ -148,8 +149,8 @@ public class PaddleController : MonoBehaviour {
 
 	public void InitMic() {
 		_clipRecord = Microphone.Start(Microphone.devices [1], true, 999, 44100);
-		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
-		}
+//		while (!(Microphone.GetPosition(Microphone.devices [1])>0)) {
+//		}
 		GetComponent<AudioSource> ().PlayOneShot (_clipRecord);
 
 	}
