@@ -4,7 +4,7 @@ using System.Collections;
 public class Puck : MonoBehaviour {
 	private float currZPos;
 	private float lastZPos;
-	
+	private float maxSpeed = 10f;
 	public GameObject player1obj;
 	public GameObject player2obj;
 	public PaddleController player1;
@@ -76,6 +76,11 @@ public class Puck : MonoBehaviour {
 		
 			InitPlayer1();
 		}
+		if(GetComponent<Rigidbody>().velocity.magnitude > maxSpeed)
+		{
+			GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * maxSpeed;
+		}
+
 		lastZPos = currZPos;
 	}
 

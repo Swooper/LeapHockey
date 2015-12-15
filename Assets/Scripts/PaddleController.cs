@@ -62,8 +62,8 @@ public class PaddleController : MonoBehaviour {
 			buffer = buffer + spectrum[x] + " ";
 		}
 
-		Debug.Log (buffer);
-		Debug.Log ("x : " + xvalue);
+		//Debug.Log (buffer);
+		//Debug.Log ("x : " + xvalue);
 		if(xvalue > 18) {
 			return true;
 		}
