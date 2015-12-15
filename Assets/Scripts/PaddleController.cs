@@ -57,7 +57,7 @@ public class PaddleController : MonoBehaviour {
 			}
 		}
 		else {
-			MicLoudness = LevelMax () * 10.0f;
+			MicLoudness = LevelMax ();
 			float moveVertical = MicLoudness;
 
 			// Horizontal movement
