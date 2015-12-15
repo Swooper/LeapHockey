@@ -24,10 +24,10 @@ public class PaddleController : MonoBehaviour {
 	float[] spectrum;
 	
 	void Awake () {
-		boundary.xMin = -1.5f;
+		boundary.xMin = -2.0f;
 		boundary.xMax = 1.5f;
 		boundary.zMin = -4.85f;
-		boundary.zMax = -2.65f;
+		boundary.zMax = -2.85f;
 		speed = 15.0f;
 		model = GameObject.Find("PaddleModel");
 		body = model.GetComponent<Rigidbody>();
@@ -43,10 +43,10 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		// Vertical movement
 		if (_isInitialized == false) {
-			if (model.transform.position.x > 0) {
+			if (model.transform.position.x > -0.5f) {
 				model.transform.position += Vector3.left * Time.deltaTime;
 			}
-			else if (model.transform.position.x < 0) {
+			else if (model.transform.position.x < -0.5f) {
 				model.transform.position += Vector3.right * Time.deltaTime;
 			}
 			if (model.transform.position.z > -4) {
