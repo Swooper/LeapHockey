@@ -41,18 +41,33 @@ public class PaddleController : MonoBehaviour {
 	void FixedUpdate () {
 		// Vertical movement
 		if (_isInitialized == false) {
+
+
+			float moveHorizontal = 0.0f;
+			float moveVertical = 0.0f;
 			if (model.transform.position.x > -0.5f) {
-				model.transform.position += Vector3.left * Time.deltaTime;
+			//	model.transform.position += Vector3.left * Time.deltaTime;
+				moveHorizontal = -1f;
 			}
 			else if (model.transform.position.x < -0.5f) {
-				model.transform.position += Vector3.right * Time.deltaTime;
+			//	model.transform.position += Vector3.right * Time.deltaTime;
+				moveHorizontal = 1f;
 			}
 			if (model.transform.position.z > -4) {
 				model.transform.position += Vector3.back * Time.deltaTime;
+				moveVertical = -1;
 			}
 			else if (model.transform.position.z < -4) {
-				model.transform.position += Vector3.forward * Time.deltaTime;
+			//	model.transform.position += Vector3.forward * Time.deltaTime;
+				moveVertical = 1;
 			}
+			Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+			body.velocity = movement;
+			body.position = new Vector3 (
+				Mathf.Clamp (body.position.x, boundary.xMin, boundary.xMax),
+				0.0f,
+				Mathf.Clamp (body.position.z, boundary.zMin, boundary.zMax)
+				);
 		}
 		else {
 			MicLoudness = LevelMax ();
